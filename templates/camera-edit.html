@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Edit Camera Form
+{% endblock %}
+
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Edit Forms</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Edit Forms</li>
+          <li class="breadcrumb-item active">Camera Edit Form</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-10 ">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Camera</h5>
+
+              <!-- Vehicle Form Elements -->
+              {% if form %}
+              <form action="{{url_for('edit_camera', camera_id=camera.camera_id) }}" class="row g-3 needs-validation" novalidate method="POST">
+
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label">Camera Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="camera_name" class="form-control" required value = "{{camera.camera_name}}" pattern="^[A-Za-z0-9 ]+$">
+                      <div class="invalid-feedback">Please, enter a valid Camera Name!</div>
+                    </div>
+                </div>
+                
+
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Location</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="location" class="form-control" required value = "{{camera.location}}" pattern="^[A-Za-z ]+$">
+                    <div class="invalid-feedback">Please, enter a valid Camera Location!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label">Vendor</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="vendor" class="form-control" required value = "{{camera.vendor}}" pattern="^[A-Za-z ]+$">
+                      <div class="invalid-feedback">Please, enter a valid Camera Vendor!</div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Resolution</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" name="resolution" value = "{{camera.resolution}}" aria-label="Default select example">
+                        <option value="1080p">1080p</option>
+                        <option value="360p">360p</option>
+                        <option value="480p">480p</option>
+                        <option value="720p">720p</option>
+                        <option value="1440p">1440p</option>
+                        <option value="2160p">2160p</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputSpeed" class="col-sm-2 col-form-label">FPS</label>
+                    <div class="col-sm-10">
+                      <input type="number" name="fps" class="form-control"  value = "{{camera.fps}}" required>
+                      <div class="invalid-feedback">Please, enter a valid FPS!</div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label">Camera Path</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="camera_path" class="form-control" required value = "{{camerastate.camera_path}}" >
+                      <div class="invalid-feedback">Please, enter a valid Camera Path!</div>
+                    </div>
+                </div>
+
+
+
+                 <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Status</label>
+                  <div class="col-sm-10">
+                      <select class="form-select" name="status" aria-label="Default select example" value = "{{camerastate.status}}" onchange="toggleStopFields()">
+                          <option value="Online">Online</option>
+                          <option value="Offline">Offline</option>
+                      </select>
+                  </div>
+                 </div>
+
+                 <div class="row mb-3">
+                    <label for="inputDateTime" class="col-sm-2 col-form-label">Active Time</label>
+                    <div class="col-sm-10">
+                      <input type="datetime-local" name="active_time" class="form-control" value = "{{camerastate.active_time}}" required>
+                      <div class="invalid-feedback">Please enter a valid Date and Time!</div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputDateTime" class="col-sm-2 col-form-label">Stop Time</label>
+                    <div class="col-sm-10">
+                      <input type="datetime-local" name="stop_time" class="form-control" value = "{{camerastate.stop_time}}" required>
+                      <div class="invalid-feedback">Please enter a valid Date and Time!</div>
+                    </div>
+                  </div>
+
+                
+
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Malfunction</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" name="malfunction" aria-label="Default select example" value = "{{camerastate.malfunction}}">
+                        <option value="None">None</option>
+                        <option value="Blurred">Blurred</option>
+                        <option value="Background Change">Background Change</option>
+                        <option value="Stop working">Stop working</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+                <div class="row mb-3 mt-4">
+                <div class="col-md-5 offset-md-5">
+                    {{ form.csrf_token() }}
+                    {{ form.submit(class_="btn btn-primary w-50") }}
+                </div>
+                </div>
+            
+
+              </form><!-- End General Form Elements -->
+              {% endif %}
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+{% endblock %}

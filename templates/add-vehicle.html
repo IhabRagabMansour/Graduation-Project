@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Add Vehicle Form
+{% endblock %}
+
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Add Forms</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Add Forms</li>
+          <li class="breadcrumb-item active">Vehicle Form</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-10 ">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Vehicle</h5>
+
+              <!-- Vehicle Form Elements -->
+              {% if form %}
+              <form class="row g-3 needs-validation" novalidate method="POST">
+
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Plate Number</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="plate_number" class="form-control" required pattern="^[A-Z]{2,3}-[0-9]{3,4}$">
+                    <div class="invalid-feedback">Please, enter a valid Plate Number!</div>
+                  </div>
+                </div>
+
+
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Vehicle Type</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="type" class="form-control" required pattern="^[A-Za-z ]+$">
+                    <div class="invalid-feedback">Please, enter a valid Vehicle Type!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Vehicle Color</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="color" class="form-control" required pattern="^[A-Za-z ]+$">
+                    <div class="invalid-feedback">Please, enter a valid Vehicle Color!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
+                  <div class="col-sm-10">
+                    <input type="date" name="date" class="form-control" required>
+                    <div class="invalid-feedback">Please, enter a valid Date!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputTime" class="col-sm-2 col-form-label">Time</label>
+                  <div class="col-sm-10">
+                    <input type="time" class="form-control" name="time" required>
+                    <div class="invalid-feedback">Please, enter a valid Time!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputNumber" class="col-sm-2 col-form-label">Vehicle Image</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" type="file" name="Vehicle_image" id="formFile" required>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputSpeed" class="col-sm-2 col-form-label">Speed</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="speed" class="form-control"  required pattern="^\d+(?:\.\d+)?$">
+                    <div class="invalid-feedback">Please, enter a valid Speed!</div>
+                  </div>
+                </div>
+
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Orientation</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="orientation" aria-label="Default select example">
+                      <option value="Up">Up</option>
+                      <option value="Down">Down</option>
+                      <option value="Right">Right</option>
+                      <option value="Left">Left</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputSpeed" class="col-sm-2 col-form-label">Idle Time</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="idle_time" class="form-control"  required pattern="^\d+(?:\.\d+)?$">
+                    <div class="invalid-feedback">Please, enter a valid Idle Time!</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Status</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="status" aria-label="Default select example">
+                      <option value="Entering">Entering</option>
+                      <option value="Exiting">Exiting</option>
+                      <option value="Moving Inside">Moving Inside</option>
+                      <option value="Parking">Parking</option>
+                      <option value="Violating">Violating</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Violation</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="violation" aria-label="Default select example">
+                      <option value="None">None</option>
+                      <option value="Speed">Speed</option>
+                      <option value="Direction">Direction</option>
+                      <option value="Parking">Parking</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Location</label>
+                <div class="col-sm-10">
+                    {{ form.location(class_="form-select", aria_label="Default select example") }}
+                </div>
+             </div>
+
+                
+
+ 
+              
+                
+                <div class="row mb-3 mt-4">
+                  <div class="col-md-5 offset-md-5">
+                      {{ form.csrf_token() }}
+                      {{ form.submit(class_="btn btn-primary w-50") }}
+                  </div>
+                  </div>
+              
+
+              </form><!-- End General Form Elements -->
+              {% endif %}
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+{% endblock %}

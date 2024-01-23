@@ -1,0 +1,462 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+
+
+{% block content %}
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    
+
+    <section class="section">
+      <div class="row">
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Camera Status</h5>
+              <canvas id="statusChart"></canvas>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const labels = {{ status_counts.keys()|list|tojson }};
+                  const data = {{ status_counts.values()|list|tojson }};
+                  new Chart(document.querySelector('#statusChart'), {
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [{
+                        label: 'Camera Status',
+                        data: data,
+                        backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                        beginAtZero: true,
+                        title: {
+                          display: true,
+                          text: 'Number of Cameras'
+                        },
+                        ticks: {
+                          stepSize: 1
+                        }
+                      }
+                        
+                      }
+                    }
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Camera Malfunction</h5>
+              <canvas id="malfunctionChart"></canvas>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const labels = {{ malfunction_counts.keys()|list|tojson }};
+                  const data = {{ malfunction_counts.values()|list|tojson }};
+                  new Chart(document.querySelector('#malfunctionChart'), {
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [{
+                        label: 'Camera Malfunction',
+                        data: data,
+                        backgroundColor: [
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(50, 205, 50, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(50, 205, 50, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                        beginAtZero: true,
+                        title: {
+                          display: true,
+                          text: 'Count of Mulfunctions'
+                        },
+                        ticks: {
+                          stepSize: 1
+                        }
+                      }
+                        
+                      }
+                    }
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Camera Malfunction Per Location</h5>
+              <canvas id="malfunctionLocChart"></canvas>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const labels = {{ camera_malfunction_map.keys()|list|tojson }};
+                  const blurredData = {{ camera_malfunction_map.values()|map(attribute='Blurred')|list|tojson }};
+                  const bgChangeData = {{ camera_malfunction_map.values()|map(attribute='Background Change')|list|tojson }};
+                  new Chart(document.querySelector('#malfunctionLocChart'), {
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [{
+                        label: 'Blurred',
+                        data: blurredData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                      }, {
+                        label: 'Background Change',
+                        data: bgChangeData,
+                        backgroundColor: 'rgba(50, 205, 50, 0.2)',
+                        borderColor: 'rgba(50, 205, 50, 1)',
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: 'Number of Malfunctions'
+                          },
+                          ticks: {
+                            stepSize: 1
+                          }
+                        }
+                      }
+                    }
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <!-- Pie Chart -->
+              <h5 class="card-title">{{parking_states.location}} Status</h5>
+              <canvas id="ParkingpieChart" style="max-height: 300px;"></canvas> 
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const dataF = {{ parking_states.free }};
+                  const dataO = {{ parking_states.occupied}};
+                  new Chart(document.querySelector('#ParkingpieChart'), {
+                    type: 'pie',
+                    data: {
+                      labels: [
+                        'Free',
+                        'Occupied'
+                      ],
+                      datasets: [{
+                        label: 'Number of Slots',
+                        data: [dataF, dataO],
+                        backgroundColor: [
+                          'rgb(255, 99, 132)',
+                          'rgb(54, 162, 235)'
+                        ],
+                        hoverOffset: 4
+                      }]
+                    },
+                    hoverOffset: 4,
+                    options: {
+                      plugins: {
+                        legend: {
+                          display: true,
+                          labels: {
+                            generateLabels: function(chart) {
+                              const data = chart.data.datasets[0].data;
+                              const labels = chart.data.labels;
+                              const total = data.reduce((acc, cur) => acc + cur);
+                              return labels.map((label, index) => {
+                                const value = data[index];
+                                const percentage = (value / total * 100).toFixed(2) + '%';
+                                return {
+                                  text: `${label}: ${value} (${percentage})`,
+                                  fillStyle: chart.data.datasets[0].backgroundColor[index],
+                                  strokeStyle: '#fff',
+                                  lineWidth: 1,
+                                  hidden: false,
+                                  index: index
+                                }
+                              });
+                            }
+                          }
+                        }
+                      }
+                    }
+                  });
+                  });
+                
+              </script>
+              <!-- End Pie CHart -->
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Vehicle Type Per Location</h5>
+              <canvas id="cameraTypeChart"></canvas>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const labels = {{ vehicle_map.keys()|list|tojson }};
+                  const carData = {{ vehicle_map.values()|map(attribute='Car')|list|tojson }};
+                  const busData = {{ vehicle_map.values()|map(attribute='Bus')|list|tojson }};
+                  const vanData = {{ vehicle_map.values()|map(attribute='Van')|list|tojson }};
+                  new Chart(document.querySelector('#cameraTypeChart'), {
+
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [{
+                        label: 'Car',
+                        data: carData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                      }, {
+                        label: 'Bus',
+                        data: busData,
+                        backgroundColor: 'rgba(50, 205, 50, 0.2)',
+                        borderColor: 'rgba(50, 205, 50, 1)',
+                        borderWidth: 1
+                      }, {
+                        label: 'Van',
+                        data: vanData,
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: 'Number of Vehicles'
+                          },
+                          ticks: {
+                            stepSize: 1
+                          }
+                        }
+                      }
+                    }
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <!-- Pie Chart -->
+              <h5 class="card-title">Vehicle Type</h5>
+              <canvas id="VehicleTypepieChart" style="max-height: 300px;"></canvas> 
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const carData = {{ vehicles_types.Car}};
+                  const busData = {{ vehicles_types.Bus }};
+                  const vanData = {{ vehicles_types.Van }};
+
+                  new Chart(document.querySelector('#VehicleTypepieChart'), {
+                    type: 'pie',
+                    data: {
+                      labels: [
+                        'Car',
+                        'Bus',
+                        'Van'
+                      ],
+                      datasets: [{
+                        label: 'Vehicle Type',
+                        data: [carData, busData, vanData],
+                        backgroundColor: [
+                          'rgb(255, 99, 132)',
+                          'rgb(54, 162, 235)',
+                          'rgb(153, 102, 255)'
+                        ],
+                        hoverOffset: 4
+                      }]
+                    },
+                    hoverOffset: 4,
+                    options: {
+                      plugins: {
+                        legend: {
+                          display: true,
+                          labels: {
+                            generateLabels: function(chart) {
+                              const data = chart.data.datasets[0].data;
+                              const labels = chart.data.labels;
+                              const total = data.reduce((acc, cur) => acc + cur);
+                              return labels.map((label, index) => {
+                                const value = data[index];
+                                const percentage = (value / total * 100).toFixed(2) + '%';
+                                return {
+                                  text: `${label}: ${value} (${percentage})`,
+                                  fillStyle: chart.data.datasets[0].backgroundColor[index],
+                                  strokeStyle: '#fff',
+                                  lineWidth: 1,
+                                  hidden: false,
+                                  index: index
+                                }
+                              });
+                            }
+                          }
+                        }
+                      }
+                    }
+                  });
+                  });
+                
+              </script>
+              <!-- End Pie CHart -->
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Vehicle Status Per Type</h5>
+              <canvas id="cameraTypeStatChart"></canvas>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const labels = {{ vehicle_status.keys()|list|tojson }};
+                  const EnData = {{ vehicle_status.values()|map(attribute='Entering')|list|tojson }};
+                  const OutData = {{ vehicle_status.values()|map(attribute='Exiting')|list|tojson }};
+                  const MIData = {{ vehicle_status.values()|map(attribute='Moving Inside')|list|tojson }};
+                  new Chart(document.querySelector('#cameraTypeStatChart'), {
+
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [{
+                        label: 'Entering',
+                        data: EnData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                      }, {
+                        label: 'Exiting',
+                        data: OutData,
+                        backgroundColor: 'rgba(50, 205, 50, 0.2)',
+                        borderColor: 'rgba(50, 205, 50, 1)',
+                        borderWidth: 1
+                      }, {
+                        label: 'Moving Inside',
+                        data: MIData,
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: 'Number of Vehicles'
+                          },
+                          ticks: {
+                            stepSize: 1
+                          }
+                        }
+                      }
+                    }
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+{% endblock %}

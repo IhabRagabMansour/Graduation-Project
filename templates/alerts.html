@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Alerts Table
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Alerts Tables</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Alerts</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    
+
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Alerts</h5>
+
+              <!-- Table with stripped rows datatable -->
+              <table class="table table table-striped table-info table-bordered  ">
+                <thead>
+                  <tr>
+                    <th scope="col">Violation Id</th>
+                    <th scope="col">Plater Number</th>
+                    <th scope="col">Camera Id</th>
+                    <th scope="col">Alert Type</th>
+                    <th scope="col">Alert Time</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for alert in alerts %}
+                    <tr>
+                    <th scope="row">{{ alert.violation_id }}</th>
+                    <td>{{ alert.car_id }}</td>
+                    <td>{{ alert.camera_id }}</td>
+                    <td>{{ alert.type }}</td>
+                    <td>{{ alert.alert_time }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+
+                
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Edit Profile - {{ user.full_name}}
+{% endblock %}
+
+{% block content %}
+
+  {% with messages = get_flashed_messages(with_categories = True) %}
+    {% if messages %}  
+        {% for category, message in messages %}
+
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-octagon me-1"></i>
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Profile</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Users</li>
+          <li class="breadcrumb-item active">Profile</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section profile">
+      <div class="row">
+        <div class="col-xl-4">
+
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+              <img src="{{ url_for('static', filename='img/profile-img.png')}}" alt="Profile" class="rounded-circle">
+              <h2>{{ user.full_name}}</h2>
+              <h3>{{ user.job}}</h3>
+              
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-xl-8">
+
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Bordered Tabs -->
+              <ul class="nav nav-tabs nav-tabs-bordered">
+
+                <li class="nav-item">
+                  <button class="nav-link " data-bs-toggle="tab" data-bs-target="#profile-overview" onclick="location.href='{{ url_for('users_profile')}}'">Overview</button>
+                </li>
+
+                <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-edit" onclick="location.href='{{ url_for('users_edit', id=user.id)}}'">Edit Profile</button>
+                </li>
+
+              </ul>
+              <div class="tab-content pt-2">
+
+                <div class="tab-pane fade show active profile-edit pt-3" id="profile-edit">
+
+                  <!-- Profile Edit Form -->
+                  {% if form %}
+                  <form action="{{url_for('users_edit', id = user.id)}}" class="row g-3 needs-validation" novalidate method="POST">
+                    
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="name" type="text" class="form-control" id="name" required value="{{ user.full_name}}" pattern="^[A-Za-z ]+$">
+                        <div class="invalid-feedback">Please, enter a valid name!</div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Company</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="company" type="text" class="form-control" id="company" required value="{{ user.company}}" >
+                        <div class="invalid-feedback">Please, enter your company!</div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="job" required value="{{ user.job}}" pattern="^[A-Za-z ]+$">
+                        <div class="invalid-feedback">Please, enter a valid job!</div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="country" type="text" class="form-control" id="country" required value="{{ user.country}}" pattern="^[A-Za-z ]+$">
+                        <div class="invalid-feedback">Please, enter a your country!</div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="phone" type="text" class="form-control" id="phone" required value="{{ user.phone}}" pattern="^01[0-2,5]{1}[0-9]{8}$">
+                        <div class="invalid-feedback">Please, enter a valid phone number!</div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="email" type="email" class="form-control" id="email" required value="{{ user.email}}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                        <div class="invalid-feedback">Please, enter a valid email!</div>
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      {{ form.csrf_token }}
+                      {{ form.submit(class_="btn btn-primary") }}
+                     
+                    </div>
+                  </form><!-- End Profile Edit Form -->
+                  {% endif %}
+
+                </div>
+
+                
+
+
+
+              </div><!-- End Bordered Tabs -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+{% endblock %}

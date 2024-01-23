@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Vehicles Table
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Vehciles Tables</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Vehicles</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    
+
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Vehicles</h5>
+
+              <!-- Table with stripped rows datatable -->
+              <table class="table table table-striped table-info table-bordered  ">
+                <thead>
+                  <tr>
+                    <th scope="col">Plate Number</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Spead</th>
+                    <th scope="col">Orientation</th>
+                    <th scope="col">Idle Time</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Violation</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for vehicle in vehicle_info %}
+                    <tr>
+                    <th scope="row">{{ vehicle.plate_number }}</th>
+                    <td>{{ vehicle.type }}</td>
+                    <td>{{ vehicle.color }}</td>
+                    <td>{{ vehicle.timestamp }}</td>
+                    <td>{{ vehicle.speed }}</td>
+                    <td>{{ vehicle.orientation }}</td>
+                    <td>{{ vehicle.idle_time }}</td>
+                    <td>{{ vehicle.status }}</td>
+                    <td>{{ vehicle.violation }}</td>
+                    <td>
+                      <a onclick="location.href='{{ url_for('edit_vehicle', vehicle_id=vehicle.plate_number)}}'" class="btn btn-sm btn-primary">Edit</a>
+                      <form action="{{ url_for('delete_vehicle', vehicle_id=vehicle.plate_number) }}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+
+                
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-10 ">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Filter Vehicle</h5>
+    
+              <!-- Vehicle Form Elements -->
+              {% if form %}
+              <form class="row g-3 needs-validation" novalidate method="POST">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="inputText" class="form-label">Plate Number</label>
+                    <input type="text" name="plate_number" class="form-control">
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputText" class="form-label">Vehicle Type</label>
+                    <input type="text" name="type" class="form-control">
+                    <div class="invalid-feedback">Please, enter a valid Vehicle Type!</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputText" class="form-label">Vehicle Color</label>
+                    <input type="text" name="color" class="form-control">
+                    <div class="invalid-feedback">Please, enter a valid Vehicle Color!</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputDate" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" data-={{form.date}}
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputTime" class="form-label">Time</label>
+                    <input type="time" class="form-control" name="time" data-={{form.time}}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="inputSpeed" class="form-label">Speed</label>
+                    <input type="text" name="speed" class="form-control">
+                    <div class="invalid-feedback">Please, enter a valid Speed!</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Orientation</label>
+                    <select class="form-select" name="orientation" aria-label="Default select example">
+                      <option value=></option>
+                      <option value="Up">Up</option>
+                      <option value="Down">Down</option>
+                      <option value="Right">Right</option>
+                      <option value="Left">Left</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputSpeed" class="form-label">Idle Time</label>
+                    <input type="text" name="idle_time" class="form-control">
+                    <div class="invalid-feedback">Please, enter a valid Idle Time!</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" name="status" aria-label="Default select example">
+                      <option value=></option>
+                      <option value="Entering">Entering</option>
+                      <option value="Exiting">Exiting</option>
+                      <option value="Moving Inside">Moving Inside</option>
+                      <option value="Parking">Parking</option>
+                      <option value="Violating">Violating</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Violation</label>
+                    <select class="form-select" name="violation" aria-label="Default select example">
+                      <option value=></option>
+                      <option value="None">None</option>
+                      <option value="Speed">Speed</option>
+                      <option value="Direction">Direction</option>
+                      <option value="Parking">Parking</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <div>
+                      <!-- {{ form.location(class_="form-select", aria_label="Default select example") }} -->
+                      <select class="form-select" name="location" aria-label="Default select example">
+                      <option value=></option>
+                      {% for location in camera_locations %}
+                      <option value= "{{location}}" > {{ location }}</option>
+                      {% endfor %}
+                    </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="mb-3 mt-4">
+                    {{ form.csrf_token() }}
+                    {{ form.submit(class_="btn btn-primary w-50") }}
+                  </div>
+                </div>
+              </form><!-- End General Form Elements -->
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+{% endblock %}

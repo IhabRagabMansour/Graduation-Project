@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Cameras Stream
+{% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <section class="section" onload="startCamera({{cameras_info[0].camera_id}})">
+        <div class="container1">
+            <div class="stream1">
+              <img id="camera-stream1" class="camera_stream">
+            </div>
+            <div class="cameras1">
+              <h2>Available Cameras</h2>
+              <ul class="camera-list">
+                {% for camera in cameras_info %}
+                  <li class="camera-item" onclick="startCamera({{camera.camera_id}})">
+                    <div class="camera-thumbnail">
+                      <img src="{{ url_for('video_thumbnail', camera_id=camera.camera_id) }}" alt="Camera Thumbnail">
+                    </div>
+                    <div class="camera-info">
+                      <h3>{{ camera.camera_id }} {{ camera.location }} {{camera.camera_name}}</h3>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+          <script>
+            const img = document.getElementById("camera-stream1");
+            function startCamera(cameraIndex) {
+              img.src= "{{ url_for('video',camera_id=0)}}"+cameraIndex
+              console.log(img.src)
+            }
+            // start with the first camera
+            startCamera(4);
+          </script>
+    </section>
+
+{% endblock %}

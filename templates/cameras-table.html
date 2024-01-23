@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Cameras Table
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}  
+      {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <div class="pagetitle">
+      <h1>Cameras Tables</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Cameras</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+
+    
+    
+    
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Cameras</h5>
+
+              <!-- Table with stripped rows datatable -->
+              <table class="table table table-striped table-info table-bordered  ">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Resolution</th>
+                    <th scope="col">FPS</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Malfunction</th>
+                    <th scope="col">Active Time</th>
+                    <th scope="col">Stop Time</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for camera in camera_info %}
+                  <tr>
+                    <th scope="row">{{ camera.camera_name }}</th>
+                    <td>{{ camera.location }}</td>
+                    <td>{{ camera.vendor }}</td>
+                    <td>{{ camera.resolution }}</td>
+                    <td>{{ camera.fps }}</td>
+                    <td>{{ camera.status }}</td>
+                    <td>{{ camera.malfunction }}</td>
+                    <td>{{ camera.active_time }}</td>
+                    <td>{{ camera.stop_time }}</td>
+                    <td>
+                      <a onclick="location.href='{{ url_for('edit_camera', camera_id=camera.camera_id)}}'" class="btn btn-sm btn-primary">Edit</a>
+                      <form action="{{ url_for('delete_camera', camera_id=camera.camera_id) }}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+
+                
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-10">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Filter</h5>
+    
+              <!-- Vehicle Form Elements -->
+              {% if form %}
+              <form class="row g-3 needs-validation" novalidate method="POST">
+    
+                <div class="col-md-2 mb-3">
+                  <label for="inputText" class="col-form-label">Camera Name</label>
+                  <input type="text" name="camera_name" class="form-control">
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  <label for="inputText" class="col-form-label">Location</label>
+                  <input type="text" name="location" class="form-control">
+                  <div class="invalid-feedback">Please enter a valid Camera Location!</div>
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  <label class="col-form-label">Status</label>
+                  <select class="form-select" name="status" aria-label="Default select example" onchange="toggleStopFields()">
+                    <option value=></option>
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                  </select>
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  <label class="col-form-label">Malfunction</label>
+                  <select class="form-select" name="malfunction" aria-label="Default select example">
+                    <option value=></option>
+                    <option value="None">None</option>
+                    <option value="Blurred">Blurred</option>
+                    <option value="Background Change">Background Change</option>
+                    <option value="Stop working">Stop working</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  <label class="col-form-label">Start Active Date</label>
+                  <input type="date" name="active_date" class="form-control">
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  <label class="col-form-label">Start Active Time</label>
+                  <input type="time" name="active_time" class="form-control">
+                </div>
+    
+                <script>
+                  function toggleStopFields() {
+                    var status = document.getElementsByName("status")[0].value;
+                    var stopFields = document.getElementById("stop-fields");
+                    if (status == "Offline") {
+                      stopFields.style.display = "flex";
+                    } else {
+                      stopFields.style.display = "none";
+                    }
+                  }
+                </script>
+    
+                <div id="stop-fields" style="display: none;" class="col-md-2 mb-3">
+                  <!-- Stop Fields (displayed only when status is "Offline") -->
+                </div>
+    
+                <div class="col-md-2 mb-3">
+                  {{ form.csrf_token() }}
+                  {{ form.submit(class_="btn btn-primary w-100") }}
+                </div>
+    
+              </form><!-- End General Form Elements -->
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}
